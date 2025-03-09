@@ -1,0 +1,28 @@
+name: build
+on:
+  push:
+jobs:
+  build-KV:
+    runs-on: ubuntu-22.04
+    name: Build KV
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.ref }}
+          submodules: recursive
+      - name: Setup Zig
+        uses: mlugg/setup-zig@v1
+      - name: Build
+        run: make -j$(nproc)
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ProxyRecomp_KV
+          path: |
+            ProxyRecomp_KV.so
+            ProxyRecomp_KV.dll
+            ProxyRecomp_KV.dylib
+            icon.png
+            manifest.json
+            README.md
